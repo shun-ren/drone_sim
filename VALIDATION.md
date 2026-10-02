@@ -20,6 +20,8 @@ The numerical suite in `tests/simulation.test.mjs` has 28 cases. It covers the f
 
 ## Browser checks
 
+**Latest run (3 Oct 2026):** all 10 browser tests passed on the production build, then the complete flight journey and sidebar tests passed again after the final responsive styling update.
+
 Start the app with `npm.cmd run dev`, then in another PowerShell window run:
 
 ```powershell
