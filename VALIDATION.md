@@ -20,7 +20,7 @@ The numerical suite in `tests/simulation.test.mjs` has 28 cases. It covers the f
 
 ## Browser checks
 
-**Latest run (3 Oct 2026):** all 10 browser tests passed on the production build, then the complete flight journey and sidebar tests passed again after the final responsive styling update.
+**Latest run (4 Oct 2026):** all 10 existing browser tests passed against the local development server after code cleanup (headless Microsoft Edge 154.0.4258.53). The tests and application flow were unchanged. The previous production-build run on 3 Oct also passed all 10 tests.
 
 Start the app with `npm.cmd run dev`, then in another PowerShell window run:
 
@@ -33,6 +33,12 @@ Playwright uses Microsoft Edge in headless mode at 1440 × 1000 unless `DRONELAB
 To target the compiled server, set `DRONELAB_TEST_URL` to its URL before running Playwright. The suite writes screenshots and exported test bundles below `outputs/`; these are generated locally.
 
 ## Scope of evidence
+
+The 4 Oct cleanup removed 51 unused UI component files, one unused hook, 11 unreferenced wrappers inside retained components, eight unused direct dependencies, three write-only renderer fields/statements, six unused CSS rules and seven exact duplicate declarations. The lockfile has 416 package entries, down from 711. Approximately 6,700 source/configuration lines were removed, excluding the lockfile. Core physics, mission evaluation, storage, exports and page interactions were not changed. Lint, TypeScript and all 28 numerical tests passed, followed by the 10 browser tests above.
+
+Unfinished city-simulator, cover and UI changes from the interrupted feature task were preserved separately before this cleanup-only pass; they are not part of this release.
+
+The production build also passed on 4 Oct. It retains the existing advisory about large client chunks; no build errors occurred.
 
 - Numerical cadence tests compare the same scripted model run at simulated 30, 60 and 144 display frames per second. They do not demonstrate equivalent performance across browsers or devices.
 - A browser demonstration verifies one scripted successful flight per mission; it does not mean every mission has been manually piloted.

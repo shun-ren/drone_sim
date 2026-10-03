@@ -31,7 +31,6 @@
     "coverage/**",
     "next-env.d.ts",
     "components/ui/**",
-    "hooks/use-mobile.ts",
     "outputs/**"
   ],
   "rules": {
@@ -44,7 +43,9 @@
     "react/display-name": "error",
     "jsx-a11y/label-has-associated-control": [
       "error",
-      { "controlComponents": ["Input", "SliderPrimitive"] }
+      {
+        "controlComponents": ["Input", "SliderPrimitive"]
+      }
     ],
     "react/jsx-no-comment-textnodes": "error",
     "react/no-unescaped-entities": "error",
