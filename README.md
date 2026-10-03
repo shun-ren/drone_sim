@@ -12,7 +12,9 @@ A playful browser flight laboratory with real simulation underneath.
 
 <br /><br />
 
-<img src="docs/images/flight-deck.png" alt="DroneLab flight deck with peach mission panel, coral controls and a colourful 3D training area" width="100%" />
+<img src="docs/images/dronelab-cover.png" alt="DroneLab: From simulation to city — supplied cover artwork" width="100%" />
+
+<sub>Cover artwork: the DroneLab vision. Actual application screenshots below.</sub>
 
 **[Quick start](#quick-start) · [Take the tour](#take-the-tour) · [Five missions](#five-missions) · [Test results](VALIDATION.md)**
 
@@ -33,7 +35,7 @@ Choose an aircraft, fly a mission, and discover what changed. DroneLab connects 
 </tr>
 </table>
 
-> **Fresh look, continuous flight.** Peach panels, coral actions, berry instruments and candy-coloured scenery. Hiding the sidebar or changing Game / Simulator presentation preserves the aircraft and mission state.
+> **Two places to fly.** Game has five scored missions in the colourful training grounds. Simulator opens a real geographic city, with first-person drone controls, live GPS and 3D building outlines. Your training flight pauses safely while you explore. The **Flight instruments** button keeps the engineering HUD available in Game.
 
 ## Five missions
 
@@ -67,7 +69,7 @@ flowchart LR
 | ----------------------------------------------- | ------------------------------------------------ |
 | Assisted and Attitude controls                  | 100 Hz rigid-body physics; 50 Hz telemetry       |
 | Chase, FPV and ground cameras                   | Delayed motor response, drag, wind and energy    |
-| Game and Simulator presentation                 | Seven synchronized plots and event intervals     |
+| Game missions and real city exploration                 | Seven synchronized plots and event intervals     |
 | Keyboard, basic touch controls, gamepad mapping | Comparison warnings when conditions differ       |
 | Hide/show mission panel; fullscreen view        | Recorded playback and versioned aircraft designs |
 | Pause, resume and repeatable demos              | CSV + JSON + image export bundles                |
@@ -98,7 +100,7 @@ Open **http://localhost:3000** (or the URL printed in the terminal). No API key 
 | **Q / E**               | Turn left / right                                              |
 | **Enter**               | Arm a ready aircraft when the flight view is focused           |
 | **Space**               | Pause / resume when the flight view is focused                 |
-| **M**                   | Switch presentation; configurable to V or B in Help            |
+| **M**                   | Switch Game / city Simulator; configurable to V or B in Help            |
 | **C**                   | Cycle cameras                                                  |
 | **F**                   | Capture a valid inspection target                              |
 | **Drag chase view**     | Orbit camera                                                   |
@@ -171,7 +173,9 @@ Saved runs belong to the current **browser, device and origin**. Export before c
 
 **Included:** an authored training area, six degree of freedom quadcopter motion, quaternion orientation, four delayed bounded motors, seeded wind, approximate collisions, mission scoring and evidence-based engineering notes.
 
-**Deferred:** real-world map search and imagery, surveyed city collisions, multiplayer, hardware control and an external AI engineer. Simulator mode uses a restrained presentation and instruments in the same training area.
+**City Simulator:** choose Singapore, San Francisco, New York or Tokyo, or enter latitude, longitude. Click **Fly the city**, use the same movement keys, drag to look, and switch to **Map view** for orientation. Maps stream from [OpenFreeMap](https://openfreemap.org/) using [MapLibre](https://maplibre.org/). No API key is required; an internet connection and WebGL2 are needed. Attribution stays visible. If maps cannot load, retry or return to Game.
+
+City flight reuses the 100 Hz aircraft physics and battery model with position hold. It starts airborne, has a 500 m height / 5 km local exploration envelope and a 30-minute flight limit. It is separate from scored training runs and is not saved to mission history. Buildings are visual and can be flown through; ground is flat. This is real geographic vector data, not photographic Google Street View. **Deferred:** photographic imagery, surveyed city collisions and elevation, address search, multiplayer, hardware control and an external AI engineer.
 
 Component curves are documented **synthetic approximations**. This project demonstrates internally tested model behaviour; it is not a validated real-aircraft digital twin. Simulation and analysis need no external map or AI service. Offline cold-start/installability is not claimed.
 
@@ -180,5 +184,5 @@ Component curves are documented **synthetic approximations**. This project demon
 <div align="center">
 <strong>One flight. One change. Something learned.</strong><br />
 <sub>React · Three.js · Recharts · IndexedDB · Playwright</sub><br />
-<sub>README presentation inspired by <a href="https://github.com/shun-ren/CAT-POKEDEX">CAT-POKEDEX</a>. All previews show DroneLab itself.</sub>
+<sub>README presentation inspired by <a href="https://github.com/shun-ren/CAT-POKEDEX">CAT-POKEDEX</a>. The cover is supplied concept artwork; interface screenshots show DroneLab itself.</sub>
 </div>

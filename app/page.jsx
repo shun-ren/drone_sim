@@ -115,6 +115,7 @@ import {
   validateSettings,
 } from '@/lib/sim.mjs';
 import { FlightScene } from '@/lib/scene.mjs';
+import CityExplorer from '@/components/city-explorer';
 import { list, put, clearCheckpoint, exportRun } from '@/lib/storage.mjs';
 
 const icons = [Crosshair, Route, Box, ScanLine, Wind];
@@ -257,6 +258,10 @@ function MiniMap({ sim }) {
 }
 
 export default function Home() {
+  const [instruments, setInstruments] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const citySession = useRef(null);
+  const modeRef = useRef('game');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState('flight'),
@@ -380,10 +385,24 @@ export default function Home() {
     [ready, reset, config, settings, control, notify],
   );
   const changeMode = useCallback((next) => {
+    if (next === 'simulator' && simRef.current.armed && !simRef.current.paused) simRef.current.pause();
+    keys.current.clear();
+    touch.current = {};
+    modeRef.current = next;
     setMode(next);
     simRef.current.switchMode(next);
     refresh((n) => n + 1);
   }, []);
+  const returnToGame = useCallback(() => changeMode('game'), [changeMode]);
+  useEffect(() => {
+    const changed = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', changed);
+    return () => document.removeEventListener('fullscreenchange', changed);
+  }, []);
+  const toggleFullscreen = () => {
+    const request = document.fullscreenElement ? document.exitFullscreen?.() : document.documentElement.requestFullscreen?.();
+    request?.catch(() => notify('Fullscreen is not available in this browser.'));
+  };
   const changeCamera = useCallback((next) => {
     setCamera(next);
     simRef.current.setCamera(next);
@@ -485,7 +504,7 @@ export default function Home() {
     if (!sceneHost.current) return;
     let scene,
       cancelled = false,
-      preparing = true,
+      compiling = true,
       warmFrame = 0;
     setReady(false);
     setRenderError('');
@@ -511,6 +530,7 @@ export default function Home() {
         });
         scene.setStyle(simRef.current.mode);
         await scene.renderer.compileAsync(scene.scene, scene.camera);
+        compiling = false;
         if (cancelled) {
           release();
           return;
@@ -539,11 +559,11 @@ export default function Home() {
           ) {
             gl.deleteSync(fence);
             warmFrame = requestAnimationFrame(() => {
+              warmFrame = 0;
               if (cancelled) {
                 release();
                 return;
               }
-              preparing = false;
               sceneRef.current = scene;
               scene.draw(simRef.current, 0);
               setReady(true);
@@ -569,12 +589,12 @@ export default function Home() {
     void prepare();
     return () => {
       cancelled = true;
-      cancelAnimationFrame(warmFrame);
       if (sceneRef.current === scene) sceneRef.current = null;
-      if (preparing && scene) {
+      if (compiling && scene) {
         scene.resizeObserver.disconnect();
         scene.renderer.domElement.remove();
-      } else release();
+      } else if (!warmFrame) release();
+      // A pending GPU readiness frame observes cancelled and releases its fence/renderer.
     };
   }, [tab, reduced, showingReplay]);
   useEffect(() => {
@@ -640,7 +660,7 @@ export default function Home() {
           1,
         ),
       };
-      if (tabRef.current === 'flight') {
+      if (tabRef.current === 'flight' && modeRef.current === 'game') {
         if (s.armed && !s.paused) {
           accumulator += realDt * (s.guided ? speedRef.current : 1);
           let count = 0;
@@ -652,7 +672,7 @@ export default function Home() {
           }
         } else accumulator = 0;
       }
-      if (sceneRef.current) {
+      if (sceneRef.current && (tabRef.current !== 'flight' || modeRef.current === 'game')) {
         let display = s;
         if (
           tabRef.current === 'analysis' &&
@@ -775,6 +795,7 @@ export default function Home() {
         return;
       if (
         tabRef.current !== 'flight' ||
+        modeRef.current !== 'game' ||
         /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) ||
         e.target.closest('[role="dialog"],[role="listbox"]')
       )
@@ -851,7 +872,7 @@ export default function Home() {
       {
         name: 'set_flight_presentation',
         description:
-          'Change only the active visual presentation; preserve physics and mission state.',
+          'Switch Game training and city Simulator. Active training is paused and preserved.',
         inputSchema: {
           type: 'object',
           properties: { mode: { type: 'string', enum: ['game', 'simulator'] } },
@@ -990,13 +1011,13 @@ export default function Home() {
             <TabsTrigger value="history">Run history</TabsTrigger>
           </TabsList>
         </Tabs>
-        <button
+        <div className="header-tools"><button type="button" className="icon-button" aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen flight view'} onClick={toggleFullscreen}><Maximize size={18}/></button><button
           className="icon-button"
           aria-label="Controls and help"
           onClick={() => setHelp(true)}
         >
           <HelpCircle size={19} />
-        </button>
+        </button></div>
       </header>
       {storageWarning && (
         <div className="warning-banner">
@@ -1006,6 +1027,7 @@ export default function Home() {
       )}
       {tab === 'flight' && (
         <div
+          hidden={mode === 'simulator'}
           className={'workspace ' + (sidebarOpen ? '' : 'sidebar-collapsed')}
         >
           <aside
@@ -1094,7 +1116,7 @@ export default function Home() {
           </aside>
           <section
             className={
-              'flight-panel ' + (mode === 'simulator' ? 'simulator' : '')
+              'flight-panel ' + (instruments ? 'simulator' : '')
             }
           >
             <div className="scene-wrap">
@@ -1144,6 +1166,7 @@ export default function Home() {
                     {sidebarOpen ? 'Hide missions' : 'Show missions'}
                   </button>
                   <div className="view-buttons">
+                    <button className="icon-button" aria-label="Flight instruments" aria-pressed={instruments} onClick={() => setInstruments(v => !v)}><Gauge size={17}/></button>
                     <button
                       className="icon-button"
                       aria-label={sound ? 'Mute motors' : 'Enable motor sound'}
@@ -1161,22 +1184,12 @@ export default function Home() {
                     >
                       <Layers size={17} />
                     </button>
-                    <button
-                      className="icon-button"
-                      aria-label="Fullscreen flight view"
-                      onClick={() =>
-                        sceneHost.current?.parentElement
-                          ?.requestFullscreen?.()
-                          .catch(() => notify('Fullscreen is not available.'))
-                      }
-                    >
-                      <Maximize size={16} />
-                    </button>
                   </div>
                 </div>
               </div>
               {sim.status === 'ready' && (
                 <div className="launch-card">
+                  <div className="launch-details" tabIndex={0} role="region" aria-label="Mission briefing details">
                   <div className="eyebrow">MISSION BRIEFING</div>
                   <h3>{mission.subtitle}</h3>
                   <p>{mission.brief}</p>
@@ -1207,6 +1220,7 @@ export default function Home() {
                       {e}
                     </p>
                   ))}
+                  </div><div className="launch-actions">
                   <button
                     className="primary full"
                     disabled={!ready || !aircraft.valid || !!renderError}
@@ -1225,6 +1239,7 @@ export default function Home() {
                   <small>
                     Demo uses repeatable pilot commands and the same physics.
                   </small>
+                  </div>
                 </div>
               )}
               {sim.status !== 'ready' && !terminal(sim) && (
@@ -1299,7 +1314,7 @@ export default function Home() {
                   </button>
                 </div>
               )}
-              {mode === 'simulator' && (
+              {instruments && (
                 <div className="instrument-strip">
                   <span>
                     ROLL <b>{num(roll)}°</b>
@@ -1453,6 +1468,7 @@ export default function Home() {
           </section>
         </div>
       )}
+      {tab === 'flight' && mode === 'simulator' && <CityExplorer config={config} session={citySession} onGame={returnToGame} switchKey={switchKey}/>}
       {tab === 'design' && (
         <div className="designer content-page">
           <div className="page-heading">

@@ -19,7 +19,7 @@ test('complete browser journey: flight, switch, pause, debrief, export, design, 
   await page.screenshot({ path: 'outputs/flight-deck.png', fullPage: true });
   await page.getByRole('button', { name: 'Watch demonstration' }).click();
   await expect(page.getByText('DEMO PILOT', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'Simulator', exact: true }).click();
+  await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
   await expect(page.locator('.instrument-strip')).toBeVisible();
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   await expect(
@@ -61,7 +61,7 @@ test('complete browser journey: flight, switch, pause, debrief, export, design, 
   );
   expect(
     JSON.parse(strFromU8(files['events.json'])).some(
-      (e) => e.type === 'presentation',
+      (e) => e.type === 'pause',
     ),
   ).toBeTruthy();
   await page.getByRole('button', { name: 'Open recorded playback' }).click();
@@ -113,7 +113,7 @@ test('manual flight controls and responsive layout', async ({ page }) => {
   await page.waitForTimeout(1300);
   await page.keyboard.up('ArrowUp');
   await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
-  await page.keyboard.press('KeyM');
+  await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
   await expect(page.locator('.instrument-strip')).toBeVisible();
   await page.getByRole('button', { name: 'End flight' }).click();
   await expect(
@@ -183,7 +183,7 @@ for (const [id, name] of [
     await page.getByRole('combobox', { name: 'Demo speed' }).click();
     await page.getByRole('option', { name: '4×', exact: true }).click();
     await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
-    await page.getByRole('tab', { name: 'Simulator', exact: true }).click();
+    await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
     await expect(page.locator('.instrument-strip')).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Mission accomplished' }),
@@ -259,7 +259,7 @@ test('two-run comparison shows configuration differences and playback does not f
   await page.keyboard.up('ArrowUp');
   await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
 });
-test('frame samples in both presentations', async ({ page, browser }) => {
+test('frame samples with game instruments hidden and shown', async ({ page, browser }) => {
   await page.goto('/');
   await expect(page.locator('main[data-ready=true]')).toBeVisible({
     timeout: 30000,
@@ -282,8 +282,8 @@ test('frame samples in both presentations', async ({ page, browser }) => {
         : null,
     })),
   };
-  for (const mode of ['Game', 'Simulator']) {
-    await page.getByRole('tab', { name: mode, exact: true }).click();
+  for (const mode of ['Game', 'Instruments']) {
+    if (mode === 'Instruments') await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
     await page.waitForTimeout(1500);
     const hud = await page.locator('.flight-footer').innerText();
     measures[mode] = { hudSample: hud.match(/\d+ FPS/)?.[0] ?? 'not reported' };
@@ -353,7 +353,7 @@ test('mission sidebar expands the same canvas and preserves keyboard, live and p
   ).toBeVisible();
   expect(await page.locator('.telemetry-strip').innerText()).toBe(frozen);
   expect(await page.locator('.minimap>small').innerText()).toBe(position);
-  await page.getByRole('tab', { name: 'Simulator', exact: true }).click();
+  await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
   await page
     .getByRole('button', { name: 'Hide missions', exact: true })
     .click();
