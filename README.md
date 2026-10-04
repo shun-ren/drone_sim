@@ -182,6 +182,16 @@ City flight reuses the 100 Hz aircraft physics and battery model with position h
 
 Component curves are documented **synthetic approximations**. This project demonstrates internally tested model behaviour; it is not a validated real-aircraft digital twin. Simulation and analysis need no external map or AI service. Offline cold-start/installability is not claimed.
 
+## Future implementation: photorealistic city flight
+
+The goal is a freely flown drone camera over recognizable, realistically textured streets and buildings, like the Singapore and Tokyo photo references. The present OpenStreetMap vector buildings cannot produce that appearance by changing their gray paint alone.
+
+1. **Improve the current map first.** Use mapped facade colors where available and material-based visual fallbacks elsewhere. Generic brick or glass patterns would improve the scene but must not be presented as photographs of those buildings.
+2. **Pilot a textured 3D city.** Evaluate a licensed photorealistic 3D-tile provider in one covered area, with a compatible renderer, drone camera and altitude integration, performance measurements, and a fallback to the current vector map where detailed tiles are unavailable. [Google Photorealistic 3D Tiles](https://developers.google.com/maps/documentation/tile/3d-tiles-overview) are one candidate. [Street View panoramas](https://developers.google.com/maps/documentation/tile/streetview) are fixed photographic viewpoints, so they cannot alone provide continuous free flight.
+3. **Control running costs before release.** A Google-based option requires an API key and billing-enabled project; its free usage cap and per-tile charges can change. Check [current pricing](https://developers.google.com/maps/billing-and-pricing/pricing), set conservative quotas, measure tile requests during real flights, and keep required attribution visible. The existing OpenFreeMap simulator remains the no-key option.
+
+Photographic detail, usable 3D coverage, terrain accuracy, and building collisions would need separate validation. This is a roadmap, not a feature in the current release.
+
 ---
 
 <div align="center">
