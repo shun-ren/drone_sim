@@ -2,9 +2,9 @@
 
 ## Separation
 
-`lib/sim.mjs` owns all physics, control, mission state, scoring and telemetry. It imports no graphics or browser API and is tested in Node. `lib/scene.mjs` reads a simulation snapshot and renders it with Three.js. `app/page.jsx` owns controls, presentation, state playback and analysis. `lib/storage.mjs` handles device-local IndexedDB and ZIP export.
+`lib/sim.mjs` owns all physics, control, mission state, scoring and telemetry. It imports no graphics or browser API and is tested in Node. `lib/scene.mjs` reads a training simulation snapshot and renders it with Three.js. `lib/city-flight.mjs` reuses the aircraft physics and control model for an independent geographic exploration session. `components/city-explorer.jsx` presents that session over MapLibre streets and building outlines. `app/page.jsx` owns controls, presentation, state playback and analysis. `lib/storage.mjs` handles device-local IndexedDB and ZIP export.
 
-Game / Simulator switches change lighting, materials, HUD and marker presentation. They never modify controller settings, timestep, mission thresholds, camera selection or physical state. Presentation changes during a run are timestamped. Cameras are independent; the inspection sensor is body-mounted, with pilot-controlled pitch, and does not inherit an external chase camera's viewing direction.
+Game is the scored training environment. Simulator is an independent city exploration session; switching to it pauses the training run and preserves its state. Both use the same 100 Hz aircraft dynamics, but the city has no authored gates, pads, mission scoring or history. The Game's Flight instruments control changes only the training HUD. Presentation changes during a training run are timestamped. Cameras are independent; the inspection sensor is body-mounted, with pilot-controlled pitch, and does not inherit an external chase camera's viewing direction.
 
 ## Units and dynamics
 
@@ -38,8 +38,14 @@ Completed reports are snapshots. Periodic IndexedDB checkpoints preserve the rec
 
 Scrubbing is playback of recorded 50 Hz states, not a new physics run. Recorded input replay is separately verified by automated model tests. A fixed wind seed alone does not make arbitrary manual flights comparable. Comparison checks configuration differences, complete scenario settings, model/control/pilot versions and route length; plots align successful hover/wind interval starts or liftoff for other missions.
 
+## Geographic simulator
+
+The city flight maps a local east/north/up position in metres to longitude and latitude around the chosen origin. Preset origins cover Singapore, San Francisco, New York and Tokyo; custom coordinates accept latitudes from −80° to 80° and longitudes from −180° to 180°. Movement is bounded to 5 km from the origin and 500 m above the flat map surface. The independent city session has a 30-minute limit, keeps transient event/input memory bounded and is not written to mission history.
+
+MapLibre streams OpenFreeMap vector tiles and OpenStreetMap-derived streets/building geometry. A versioned, locally served MapLibre module worker avoids Vite development transforms inside the Web Worker. The geographic scene requires internet access and WebGL2. Buildings are visual, with no physical collision or surveyed elevation; map coverage varies by location. The simulator does not use Google Street View photographs or claim unconstrained flight across the entire globe in one continuous session.
+
 ## Runtime
 
-React / Vinext / Vite with Cloudflare Worker hosting. All simulation work runs locally in the browser. No AI key, map key, private connector, external image asset or user data upload is required. The exact dependency versions are in package.json and package-lock.json. Synthetic catalogue data is original project data, provenance is displayed in the designer and every export.
+React / Vinext / Vite with Cloudflare Worker hosting. Simulation work runs locally in the browser; the optional geographic scene requests public map tiles. No AI key, map key, private connector or user data upload is required. The exact dependency versions are in package.json and package-lock.json. Synthetic catalogue data is original project data, provenance is displayed in the designer and every export.
 
 An optional feature-detected WebMCP surface exposes read_flight_state and set_flight_presentation. It uses the same visible UI actions, validates presentation values and cleans up registrations. Native WebMCP availability is browser-dependent.

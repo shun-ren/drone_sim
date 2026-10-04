@@ -33,6 +33,9 @@ Choose an aircraft, fly a mission, and discover what changed. DroneLab connects 
 <td width="50%"><img src="docs/images/flight-analysis.png" alt="Flight debrief with scores, telemetry plots and engineering findings" /><br /><strong>03 / Follow the evidence</strong><br />Explore seven linked plots, score breakdowns and event highlights. Compare runs and scrub recorded flight poses.</td>
 <td width="50%"><img src="docs/images/inspection.png" alt="Inspection mission debrief with five captured target images" /><br /><strong>04 / Keep what you discover</strong><br />Save designs and runs in your browser. Export complete ZIP bundles, including inspection images.</td>
 </tr>
+<tr>
+<td colspan="2"><img src="docs/images/city-simulator.png" alt="Actual city simulator showing Singapore streets and three-dimensional building outlines from OpenStreetMap data" /><br /><strong>05 / Explore a real place</strong><br />Choose a city or enter coordinates, then fly your aircraft over mapped streets and buildings. This screenshot is from the running browser application.</td>
+</tr>
 </table>
 
 > **Two places to fly.** Game has five scored missions in the colourful training grounds. Simulator opens a real geographic city, with first-person drone controls, live GPS and 3D building outlines. Your training flight pauses safely while you explore. The **Flight instruments** button keeps the engineering HUD available in Game.
@@ -173,7 +176,7 @@ Saved runs belong to the current **browser, device and origin**. Export before c
 
 **Included:** an authored training area, six degree of freedom quadcopter motion, quaternion orientation, four delayed bounded motors, seeded wind, approximate collisions, mission scoring and evidence-based engineering notes.
 
-**City Simulator:** choose Singapore, San Francisco, New York or Tokyo, or enter latitude, longitude. Click **Fly the city**, use the same movement keys, drag to look, and switch to **Map view** for orientation. Maps stream from [OpenFreeMap](https://openfreemap.org/) using [MapLibre](https://maplibre.org/). No API key is required; an internet connection and WebGL2 are needed. Attribution stays visible. If maps cannot load, retry or return to Game.
+**City Simulator:** choose Singapore, San Francisco, New York or Tokyo, or enter latitude, longitude to explore another mapped location. Click **Fly the city**, use the same movement keys, drag to look, and switch to **Map view** for orientation. Maps stream from [OpenFreeMap](https://openfreemap.org/) using [MapLibre](https://maplibre.org/). No API key is required; an internet connection and WebGL2 are needed. Attribution stays visible. If maps cannot load, retry or return to Game.
 
 City flight reuses the 100 Hz aircraft physics and battery model with position hold. It starts airborne, has a 500 m height / 5 km local exploration envelope and a 30-minute flight limit. It is separate from scored training runs and is not saved to mission history. Buildings are visual and can be flown through; ground is flat. This is real geographic vector data, not photographic Google Street View. **Deferred:** photographic imagery, surveyed city collisions and elevation, address search, multiplayer, hardware control and an external AI engineer.
 
