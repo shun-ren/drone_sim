@@ -1,0 +1,81 @@
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+.city-explorer { color: #eaf8ff; background: #0c1d35; min-height: calc(100vh - 84px); }
+.city-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 32px 18px; background: linear-gradient(110deg,#152947,#23345b); }
+.city-title .eyebrow { color: #5ce2f5; font-size: 10px; }
+.city-title h1 { font-size: clamp(23px,2.5vw,34px); line-height: 1.2; margin: 8px 0; letter-spacing: -1px; }
+.city-title p { margin: 0; color: #acc7dc; font-size: 13px; }
+.city-mode { display: flex; padding: 4px; border: 1px solid #8ddff066; background: #071629; border-radius: 12px; flex: none; }
+.city-mode button { padding: 10px 20px; border: 0; background: transparent; color: #c5dae8; border-radius: 8px; font-size: 13px; }
+.city-mode button[aria-selected=true] { background: #54dff5; color: #092038; font-weight: 700; }
+.city-location-bar { display: flex; gap: 12px; align-items: center; padding: 12px 32px; border-block: 1px solid #436078; background: #13253f; }
+.city-location-bar label { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.city-location-bar select { padding: 9px 8px; max-width: 100%; background: #213954; border: 1px solid #4b6b83; border-radius: 6px; color: #fff; font: inherit; font-size: 13px; }
+.city-location-bar form { display: flex; gap: 6px; flex: 1; max-width: 420px; }
+.city-location-bar input { min-width: 0; width: 100%; background: #0c1d35; border: 1px solid #4b6b83; color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 12px; }
+.city-location-bar input::placeholder { color: #a0b7cd; }
+.city-location-bar button,.city-flight-bar button,.city-load-card button,.city-tile-warning button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #294866; border: 1px solid #5c7b93; padding: 10px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; color: white; }
+.city-view-toggle { margin-left: auto; white-space: nowrap; }
+.city-stage { position: relative; height: min(68vh,850px); min-height: 420px; overflow: hidden; background: #9ed3e6; }
+.city-map { position: absolute; inset: 0; touch-action: none; }
+.city-map:focus-visible { outline: 3px solid #39d8f4; outline-offset: -3px; }
+.city-map .maplibregl-ctrl-bottom-right { z-index: 3; max-width: 100%; }
+.city-map .maplibregl-ctrl-attrib { font-size: 10px; color: #182b3c; background: #ffffffe8; }
+.city-map-label { position: absolute; top: 20px; left: 24px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border: 1px solid #b5e8f888; border-radius: 8px; background: #0d254cdd; color: #c9f5ff; font: 10px monospace; letter-spacing: 1px; pointer-events: none; }
+.city-map-label span { color: #ffdc99; padding-left: 10px; border-left: 1px solid #85bdd266; }
+.city-crosshair { position: absolute; left: 50%; top: 46%; color: #fff; pointer-events: none; transform: translate(-50%,-50%); filter: drop-shadow(0 1px 2px #163851); }
+.city-crosshair i { display: block; width: 30px; height: 30px; border: 1px solid #ffffffa6; border-radius: 50%; }
+.city-crosshair i::after,.city-crosshair i::before { content: ''; position: absolute; background: #fff; top: 14px; left: 8px; width: 14px; height: 2px; }
+.city-crosshair i::after { transform: rotate(90deg); }
+.city-crosshair span { position: absolute; width: 90px; left: -30px; top: 39px; text-align: center; font: 11px monospace; }
+.city-map-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); color: #e90a7e; filter: drop-shadow(0 2px 2px white); pointer-events: none; }
+.city-instruments { position: absolute; bottom: 40px; left: 24px; right: 24px; display: flex; gap: 30px; width: fit-content; max-width: calc(100% - 48px); border: 1px solid #b2eaff88; border-radius: 12px; background: #0c2346e8; padding: 16px 22px; pointer-events: none; box-shadow: 0 6px 30px #00163233; }
+.city-instruments div { min-width: 0; }
+.city-instruments span { display: block; color: #8ddbe8; font: 9px monospace; letter-spacing: 1px; margin-bottom: 8px; }
+.city-instruments strong { color: #fff; font: 25px monospace; white-space: nowrap; }
+.city-instruments strong small { font-size: 12px; color: #a9ccd9; }
+.city-instruments .city-gps { display: block; font-size: 13px; padding-top: 7px; }
+.city-load-card { position: absolute; z-index: 4; width: min(420px,calc(100% - 32px)); left: 50%; top: 43%; transform: translate(-50%,-50%); background: #102840f5; border: 1px solid #70d9ed; border-radius: 16px; padding: 26px; box-shadow: 0 10px 40px #10223855; }
+.city-load-card h2 { font-size: 20px; margin: 10px 0; color: #fff; }
+.city-load-card p { color: #c4daeb; font-size: 13px; line-height: 1.6; }
+.city-load-card button { margin: 12px 8px 0 0; }
+.city-tile-warning { position: absolute; top: 65px; left: 24px; right: 24px; background: #543c20ef; color: #ffeac9; border-radius: 6px; padding: 9px 12px; font-size: 12px; }
+.city-flight-bar { display: flex; gap: 12px; align-items: center; padding: 16px 24px; background: #142b46; border-top: 1px solid #436078; }
+.city-flight-bar .city-fly { background: #ff698e; color: #27132e; border-color: #ff9fb5; min-width: 140px; }
+.city-flight-bar span { font-size: 11px; color: #bbccdf; margin-left: auto; line-height: 2; }
+.city-flight-bar kbd { background: #213e5c; border-color: #6a8aa0; color: #d6f8ff; margin-left: 8px; }
+.city-footnote { margin: 0; padding: 13px 24px 20px; color: #a3bdd2; font-size: 11px; line-height: 1.6; }
+.city-input-error { margin: 0; padding: 12px 24px; background: #502936; color: #ffe0ec; font-size: 13px; }
+.city-touch-controls { display: none; }
+@media (max-width: 900px) {
+ .city-toolbar { padding: 20px; }
+ .city-location-bar { padding: 12px 20px; flex-wrap: wrap; }
+ .city-location-bar form { order: 3; max-width: none; flex-basis: 100%; }
+ .city-flight-bar { flex-wrap: wrap; }
+ .city-flight-bar span { flex-basis: 100%; margin: 0; }
+ .city-instruments { gap: 20px; }
+ .city-instruments .city-gps { font-size: 11px; }
+}
+@media (max-width: 600px) {
+ .city-toolbar { align-items: flex-start; gap: 12px; flex-direction: column; }
+ .city-mode { align-self: stretch; }
+ .city-mode button { flex: 1; }
+ .city-stage { height: 62vh; min-height: 430px; }
+ .city-instruments { display: grid; grid-template-columns: repeat(3,1fr); left: 12px; right: 12px; bottom: 36px; width: auto; max-width: none; gap: 12px; padding: 12px; }
+ .city-instruments div:last-child { grid-column: 1/-1; display: flex; gap: 12px; align-items: center; }
+ .city-instruments div:last-child span { margin: 0; }
+ .city-instruments .city-gps { padding: 0; }
+ .city-instruments strong { font-size: 22px; }
+ .city-map-label { left: 12px; top: 12px; }
+ .city-location-bar { gap: 10px; padding: 12px; }
+ .city-location-bar label { flex: 1; }
+ .city-location-bar select { width: 100%; font-size: 12px; padding: 8px 4px; }
+ .city-location-bar button { padding: 9px; }
+ .city-flight-bar { padding: 12px; gap: 8px; }
+ .city-footnote { padding: 12px; }
+}
+@media (pointer: coarse), (max-width: 680px) {
+ .city-touch-controls { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; padding: 12px; }
+ .city-touch-controls button { border: 1px solid #637c95; border-radius: 6px; background: #253c58; padding: 10px 5px; display: grid; justify-items: center; gap: 5px; touch-action: none; user-select: none; }
+ .city-touch-controls small { font-size: 10px; }
+}

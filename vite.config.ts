@@ -3,6 +3,15 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json';
+import { copyFileSync, mkdirSync } from 'node:fs';
+
+// Serve the package's module worker unchanged. Vite's dev import rewriting injects
+// window-only HMR code into MapLibre's dynamic worker imports; Workers have no window.
+const mapWorkerDirectory = new URL('./public/map-worker-6.11.2/', import.meta.url);
+mkdirSync(mapWorkerDirectory, { recursive: true });
+for (const file of ['maplibre-gl-worker.mjs', 'maplibre-gl-shared.mjs']) {
+  copyFileSync(new URL('./node_modules/maplibre-gl/dist/' + file, import.meta.url), new URL(file, mapWorkerDirectory));
+}
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
