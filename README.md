@@ -99,10 +99,10 @@ Open **http://localhost:3000** (or the URL printed in the terminal). No API key 
 | ----------------------- | -------------------------------------------------------------- |
 | **W / S**               | Forward / backward in aircraft heading                         |
 | **A / D**               | Left / right                                                   |
-| **↑ / ↓**               | Climb / descend in Assisted; collective adjustment in Attitude |
+| **Space / Ctrl**         | Climb / descend in Assisted; collective adjustment in Attitude |
 | **Q / E**               | Turn left / right                                              |
 | **Enter**               | Arm a ready aircraft when the flight view is focused           |
-| **Space**               | Pause / resume when the flight view is focused                 |
+| **P**                   | Pause / resume when the flight view is focused                 |
 | **M**                   | Switch Game / city Simulator; configurable to V or B in Help            |
 | **C**                   | Cycle cameras                                                  |
 | **F**                   | Capture a valid inspection target                              |
@@ -178,7 +178,7 @@ Saved runs belong to the current **browser, device and origin**. Export before c
 
 **City Simulator:** choose Singapore, San Francisco, New York or Tokyo, or enter latitude and longitude in separate fields to explore another mapped location. Click **Fly the city**, use the same movement keys, drag to look, and switch to **Map view** for orientation. Maps stream from [OpenFreeMap](https://openfreemap.org/) using [MapLibre](https://maplibre.org/). No API key is required; an internet connection and WebGL2 are needed. Attribution stays visible. If maps cannot load, retry or return to Game.
 
-**Explore faster:** Simulator requests 12 m/s horizontal, climb and descent speed; actual speed depends on aircraft dynamics. In the city simulator, use **W A S D** to move, **Space** to ascend, **Ctrl** to descend, **Q E** to turn and **P** to pause. Game controls are unchanged. Opening **Map view** pauses the flight so you can drag to pan and scroll or pinch to zoom. **Middle-click** a ground-map location to teleport, or select **Teleport → click/tap a destination → Jump here**. Jumps keep altitude, heading and battery while clearing momentum. **Undo jump** returns to the previous position; **Centre on drone** finds your aircraft after browsing. Jump destinations must remain within 5 km east/west and north/south of the starting location. Use the coordinate fields to start in another region. Return to **Drone view** and resume to continue flying.
+**Explore faster:** Simulator requests 12 m/s horizontal, climb and descent speed; actual speed depends on aircraft dynamics. Both flight views use **W A S D** to move, **Space** to ascend, **Ctrl** to descend, **Q E** to turn and **P** to pause. Opening **Map view** pauses the flight so you can drag to pan and scroll or pinch to zoom. **Middle-click** a ground-map location to teleport, or select **Teleport → click/tap a destination → Jump here**. Jumps keep altitude, heading and battery while clearing momentum. **Undo jump** returns to the previous position; **Centre on drone** finds your aircraft after browsing. Jump destinations must remain within 5 km east/west and north/south of the starting location. Use the coordinate fields to start in another region. Return to **Drone view** and resume to continue flying.
 
 City flight reuses the 100 Hz aircraft physics and battery model with position hold. It starts airborne, has a 500 m height / 5 km local exploration envelope and a 30-minute flight limit. It is separate from scored training runs and is not saved to mission history. Buildings are visual and can be flown through; ground is flat. This is real geographic vector data, not photographic Google Street View. **Deferred:** photographic imagery, surveyed city collisions and elevation, address search, multiplayer, hardware control and an external AI engineer.
 

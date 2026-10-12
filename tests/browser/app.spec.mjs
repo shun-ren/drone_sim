@@ -112,9 +112,17 @@ test('manual flight controls and responsive layout', async ({ page }) => {
   });
   await page.getByRole('button', { name: 'Arm & fly' }).click();
   await page.keyboard.down('ArrowUp');
-  await page.waitForTimeout(1300);
+  await page.waitForTimeout(700);
   await page.keyboard.up('ArrowUp');
+  await expect(page.locator('.scene-tags')).not.toContainText('ACTIVE');
+  await page.keyboard.down('Space');
+  await page.waitForTimeout(1300);
+  await page.keyboard.up('Space');
   await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
+  await page.keyboard.press('KeyP');
+  await expect(page.getByTestId('flight-paused-banner')).toContainText('Flight paused');
+  await page.keyboard.press('KeyP');
+  await expect(page.getByTestId('flight-paused-banner')).toHaveCount(0);
   await page.getByRole('button', { name: 'Flight instruments', exact: true }).click();
   await expect(page.locator('.instrument-strip')).toBeVisible();
   await page.getByRole('button', { name: 'End flight' }).click();
@@ -256,9 +264,9 @@ test('two-run comparison shows configuration differences and playback does not f
   await page.getByRole('tab', { name: 'Flight deck', exact: true }).click();
   await page.getByRole('button', { name: 'Prepare another flight' }).click();
   await page.getByRole('button', { name: 'Arm & fly' }).click();
-  await page.keyboard.down('ArrowUp');
+  await page.keyboard.down('Space');
   await page.waitForTimeout(1500);
-  await page.keyboard.up('ArrowUp');
+  await page.keyboard.up('Space');
   await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
 });
 test('frame samples with game instruments hidden and shown', async ({ page, browser }) => {
@@ -329,9 +337,9 @@ test('mission sidebar expands the same canvas and preserves keyboard, live and p
   await expect(page.locator('#mission-sidebar')).toBeVisible();
   await expect(page.locator('.scene-tags')).toContainText('READY');
   await page.getByRole('button', { name: 'Arm & fly' }).click();
-  await page.keyboard.down('ArrowUp');
+  await page.keyboard.down('Space');
   await page.waitForTimeout(1500);
-  await page.keyboard.up('ArrowUp');
+  await page.keyboard.up('Space');
   await expect(page.locator('.scene-tags')).toContainText('ACTIVE');
   await page
     .getByRole('button', { name: 'Hide missions', exact: true })

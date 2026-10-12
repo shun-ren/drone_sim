@@ -648,7 +648,8 @@ export default function Home() {
           1,
         ),
         up: clamp(
-          key('ArrowUp', 'ArrowDown') +
+          Number(keys.current.has('Space')) -
+            Number(keys.current.has('ControlLeft') || keys.current.has('ControlRight')) +
             (touch.current.up || 0) -
             (axes[1] || 0),
           -1,
@@ -805,8 +806,9 @@ export default function Home() {
         'KeyS',
         'KeyA',
         'KeyD',
-        'ArrowUp',
-        'ArrowDown',
+        'Space',
+        'ControlLeft',
+        'ControlRight',
         'KeyQ',
         'KeyE',
       ];
@@ -815,7 +817,7 @@ export default function Home() {
         keys.current.add(e.code);
       }
       if (e.repeat) return;
-      if (e.code === 'Space') {
+      if (e.code === 'KeyP') {
         e.preventDefault();
         actions.current.pause();
       }
@@ -1397,15 +1399,15 @@ export default function Home() {
                 <span>
                   <kbd>W A S D</kbd> Move
                 </span>
-                <span>
-                  <kbd>↑ ↓</kbd> Altitude
-                </span>
+                <span><kbd>Space</kbd> Ascend</span>
+                <span><kbd>Ctrl</kbd> Descend</span>
                 <span>
                   <kbd>Q E</kbd> Yaw
                 </span>
                 <span>
                   <kbd>{switchKey.replace('Key', '')}</kbd> Look
                 </span>
+                <span><kbd>P</kbd> Pause</span>
               </div>
               <div className="action-buttons">
                 {active && (
@@ -2140,10 +2142,11 @@ export default function Home() {
             {[
               ['W / S', 'Forward / backward'],
               ['A / D', 'Left / right'],
-              ['↑ / ↓', 'Climb / descend'],
+              ['Space', 'Climb'],
+              ['Ctrl', 'Descend'],
               ['Q / E', 'Turn left / right'],
               ['Enter', 'Arm aircraft'],
-              ['Space', 'Pause / resume'],
+              ['P', 'Pause / resume'],
               ['C', 'Cycle camera'],
               ['F', 'Capture inspection image'],
               [switchKey.replace('Key', ''), 'Switch Game / Simulator'],
@@ -2156,7 +2159,7 @@ export default function Home() {
           </div>
           <p className="muted">
             Release movement keys to hold position in Assisted. In Attitude, W/S
-            and A/D command tilt; ↑/↓ adjust collective around estimated hover
+            and A/D command tilt; Space/Ctrl adjust collective around estimated hover
             demand. Descend below 0.5 m/s onto a marked pad. Drag the chase view
             to orbit; in FPV, drag vertically to aim the sensor.
           </p>
