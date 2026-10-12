@@ -75,7 +75,7 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
         const input = {
           forward: clamp(key('KeyW', 'KeyS') + (touch.current.forward || 0) - axis(3), -1, 1),
           left: clamp(key('KeyA', 'KeyD') + (touch.current.left || 0) - axis(2), -1, 1),
-          up: clamp(key('ArrowUp', 'ArrowDown') + (touch.current.up || 0) - axis(1), -1, 1),
+          up: clamp(Number(keys.current.has('Space')) - Number(keys.current.has('ControlLeft') || keys.current.has('ControlRight')) + (touch.current.up || 0) - axis(1), -1, 1),
           yaw: clamp(key('KeyQ', 'KeyE') + (touch.current.yaw || 0) - axis(0), -1, 1),
         };
         while (accumulator >= DT) { s.step(input); accumulator -= DT; }
@@ -133,8 +133,8 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
     const pause = () => { clear(); const s = session.current; if (s.armed && !s.paused) s.pause(); };
     const down = e => {
       if (e.target.closest('input,select,textarea,button,a,[role=tab],[role=dialog],[role=combobox]')) return;
-      if (['KeyW','KeyS','KeyA','KeyD','ArrowUp','ArrowDown','KeyQ','KeyE'].includes(e.code)) { e.preventDefault(); keys.current.add(e.code); }
-      if (e.code === 'Space' && !e.repeat) { e.preventDefault(); session.current.pause(); clear(); }
+      if (['KeyW','KeyS','KeyA','KeyD','Space','ControlLeft','ControlRight','KeyQ','KeyE'].includes(e.code)) { e.preventDefault(); keys.current.add(e.code); }
+      if (e.code === 'KeyP' && !e.repeat) { e.preventDefault(); session.current.pause(); clear(); }
       if (e.code === switchKey && !e.repeat) onGame();
     };
     const up = e => keys.current.delete(e.code);
@@ -213,7 +213,7 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
       {jumpNotice && <p role="status">{jumpNotice}</p>}
     </div>}
     <div className="city-stage">
-      <div ref={host} className={`city-map${choosing ? ' city-pick-destination' : ''}`} tabIndex={0} role="application" aria-label={view === 'map' ? 'City position map. Drag to pan, scroll to zoom, middle-click to teleport.' : 'City drone controls. W A S D move, arrows climb, Q E turn. Drag to look.'}
+      <div ref={host} className={`city-map${choosing ? ' city-pick-destination' : ''}`} tabIndex={0} role="application" aria-label={view === 'map' ? 'City position map. Drag to pan, scroll to zoom, middle-click to teleport.' : 'City drone controls. W A S D move, Space climbs, Control descends, Q E turn, P pauses. Drag to look.'}
         onAuxClick={e => { if (e.button === 1) e.preventDefault(); }}
         onPointerDown={e => {
           if (e.target.closest('.maplibregl-control-container')) return;
@@ -233,6 +233,7 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
         onPointerMove={e => { if (!drag.current) return; const dx = e.clientX - drag.current[0], dy = e.clientY - drag.current[1]; session.current.yawTarget -= dx * .004; look.current = clamp(look.current - dy * .004, -1.2, .12); drag.current = [e.clientX,e.clientY]; }}
         onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}/>
       <div className="city-map-label"><Navigation size={14}/> {view === 'drone' ? 'DRONE POV' : 'POSITION MAP'} <span>{s?.paused ? 'PAUSED' : flying ? 'FLYING' : 'PREVIEW'}</span></div>
+      {s?.paused && view === 'drone' && <div className="city-paused-banner" role="status" aria-live="polite" data-testid="city-paused-banner"><Pause size={15} fill="currentColor"/><strong>City flight paused</strong><span>Press P to resume</span></div>}
       {view === 'drone' && <div className="city-crosshair" aria-hidden="true"><i/><span>{s?.heading.toFixed(0) || '0'}°</span></div>}
       {status === 'loading' && <div className="city-load-card" role="status"><MapPin size={28}/><h2>Bringing the city into view</h2><p>{message}</p></div>}
       {status === 'error' && <div className="city-load-card" role="alert"><h2>Map connection unavailable</h2><p>{message}</p><button onClick={() => setRetry(n => n + 1)}>Retry map</button><button onClick={onGame}>Back to Game</button></div>}
@@ -247,7 +248,7 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
     <div className="city-flight-bar">
       <button className="city-fly" disabled={!['ready','degraded'].includes(status) || !session.current.aircraft.valid || ended} onClick={fly}>{flying && !s.paused ? <Pause size={16}/> : <Play size={16}/>} {flying ? s.paused ? 'Resume city flight' : 'Pause city flight' : 'Fly the city'}</button>
       <button onClick={() => relocate({ ...location })}><RotateCcw size={15}/> Reset position</button>
-      <span><kbd>W A S D</kbd> Move <kbd>↑ ↓</kbd> Altitude <kbd>Q E</kbd> Turn · {view === 'map' ? 'Drag to pan' : 'Drag to look'} · Space to pause</span>
+      <div className="city-control-legend"><span><kbd>W A S D</kbd> Move</span><span><kbd>Space</kbd> Ascend</span><span><kbd>Ctrl</kbd> Descend</span><span><kbd>Q E</kbd> Turn</span><span>{view === 'map' ? 'Drag to pan' : 'Drag to look'}</span><span><kbd>P</kbd> Pause</span></div>
     </div>
     {(ended || !session.current.aircraft.valid) && <p role="alert" className="city-input-error">{ended ? s.reason : session.current.aircraft.errors.join(' ')}</p>}
     <div className="city-touch-controls" aria-label="Touch city flight controls">{[['Forward','forward',1,ArrowUp],['Back','forward',-1,ArrowDown],['Left','left',1,ArrowLeft],['Right','left',-1,ArrowRight],['Climb','up',1,ArrowUp],['Descend','up',-1,ArrowDown],['Turn left','yaw',1,RotateCcw],['Turn right','yaw',-1,Navigation]].map(([label,key,value,Icon]) => <button key={label} aria-label={label} onPointerDown={e => { touch.current[key] = value; e.currentTarget.setPointerCapture(e.pointerId); }} onPointerUp={() => { touch.current[key] = 0; }} onPointerCancel={() => { touch.current[key] = 0; }}><Icon size={16}/><small>{label}</small></button>)}</div>

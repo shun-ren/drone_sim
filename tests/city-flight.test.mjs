@@ -55,7 +55,7 @@ test('teleport and undo preserve flight resources and settle at the requested po
   city.status = 'failed'; assert.equal(city.teleport(destination), false);
 });
 
-test('city cruise is faster, releases into hover, and leaves training speeds unchanged', () => {
+test('city cruise and vertical flight are faster, release into hover, and leave training speeds unchanged', () => {
   for (const config of PRESETS) {
     const fast = new CityFlight(config), normal = new CityFlight(config);
     normal.flightSpeeds = undefined;
@@ -63,7 +63,13 @@ test('city cruise is faster, releases into hover, and leaves training speeds unc
     for (let i = 0; i < 1200; i++) { fast.step({ forward: 1 }); normal.step({ forward: 1 }); }
     assert.equal(fast.status, 'active');
     assert.ok(fast.speed > normal.speed * 1.7, `${config.id}: ${fast.speed} vs ${normal.speed}`);
-    assert.ok(Math.abs(fast.altitude - fast.location.altitude) < 1);
+    const ascending = new CityFlight(config), standardAscending = new CityFlight(config);
+    standardAscending.flightSpeeds = undefined;
+    ascending.arm(); standardAscending.arm();
+    for (let i = 0; i < 800; i++) { ascending.step({ up: 1 }); standardAscending.step({ up: 1 }); }
+    assert.ok(ascending.altitude - ascending.location.altitude > (standardAscending.altitude - standardAscending.location.altitude) * 2,
+      `${config.id}: ${ascending.altitude} vs ${standardAscending.altitude}`);
+    assert.ok(ascending.v[2] > standardAscending.v[2] * 2, `${config.id} vertical speed: ${ascending.v[2]} vs ${standardAscending.v[2]}`);
     for (let i = 0; i < 1500; i++) fast.step();
     assert.ok(fast.speed < .2, `${config.id} stops: ${fast.speed}`);
   }

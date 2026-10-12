@@ -75,6 +75,41 @@ test('city map pans independently, teleports by middle-click and touch, and flie
 });
 });
 
+test('city controls use Space to ascend, Ctrl to descend, and P to pause', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await expect(page.locator('main[data-ready=true]')).toBeVisible({ timeout: 30000 });
+  await page.getByRole('tab', { name: 'Simulator', exact: true }).click();
+  const city = page.locator('.city-explorer');
+  await expect(city).toHaveAttribute('data-map-status', 'ready', { timeout: 45000 });
+  await expect(city.locator('.city-control-legend')).toContainText('Space Ascend');
+  await expect(city.locator('.city-control-legend')).toContainText('Ctrl Descend');
+  await expect(city.locator('.city-control-legend')).toContainText('P Pause');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  await page.getByRole('button', { name: 'Fly the city', exact: true }).click();
+  await city.locator('.city-map').focus();
+  const start = parseFloat(await city.getByTestId('city-altitude').innerText());
+  await page.keyboard.down('ArrowUp');
+  await page.waitForTimeout(900);
+  await page.keyboard.up('ArrowUp');
+  expect(Math.abs(parseFloat(await city.getByTestId('city-altitude').innerText()) - start)).toBeLessThan(.5);
+  await page.keyboard.down('Space');
+  await expect.poll(async () => parseFloat(await city.getByTestId('city-altitude').innerText()), { timeout: 10000 }).toBeGreaterThan(start + 4);
+  await page.keyboard.up('Space');
+  const climbed = parseFloat(await city.getByTestId('city-altitude').innerText());
+  await page.keyboard.down('ControlLeft');
+  await expect.poll(async () => parseFloat(await city.getByTestId('city-altitude').innerText()), { timeout: 10000 }).toBeLessThan(climbed - 4);
+  await page.keyboard.up('ControlLeft');
+  await page.keyboard.press('KeyP');
+  await expect(city.locator('.city-map-label')).toContainText('PAUSED');
+  await expect(city.getByTestId('city-paused-banner')).toContainText('Press P to resume');
+  await page.keyboard.press('KeyP');
+  await expect(city.locator('.city-map-label')).toContainText('FLYING');
+  await expect(city.getByTestId('city-paused-banner')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test('city simulator loads real map data, flies, and returns to the paused game', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));

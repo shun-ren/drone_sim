@@ -25,12 +25,14 @@ test('complete browser journey: flight, switch, pause, debrief, export, design, 
   await expect(
     page.getByRole('heading', { name: 'Flight paused' }),
   ).toBeVisible();
+  await expect(page.getByTestId('flight-paused-banner')).toContainText('Flight paused');
   const frozen = await page.locator('.telemetry-strip').innerText();
   await page.waitForTimeout(600);
   expect(await page.locator('.telemetry-strip').innerText()).toBe(frozen);
   await page
     .getByRole('button', { name: 'Resume flight', exact: true })
     .click();
+  await expect(page.getByTestId('flight-paused-banner')).toHaveCount(0);
   await page.getByRole('combobox', { name: 'Demo speed' }).click();
   await page.getByRole('option', { name: '4×', exact: true }).click();
   await expect(

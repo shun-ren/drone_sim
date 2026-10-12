@@ -1121,6 +1121,13 @@ export default function Home() {
           >
             <div className="scene-wrap">
               {sceneElement}
+              {sim.paused && (
+                <div className="flight-paused-banner" role="status" aria-live="polite" data-testid="flight-paused-banner">
+                  <Pause size={15} fill="currentColor" />
+                  <strong>Flight paused</strong>
+                  <span>Simulation frozen</span>
+                </div>
+              )}
               <div className="scene-top">
                 <div>
                   <div className="eyebrow">FIELD 01 / TRAINING GROUNDS</div>
