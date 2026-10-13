@@ -16,6 +16,8 @@ A playful browser flight laboratory with real simulation underneath.
 
 <sub>Cover artwork: the DroneLab vision. Actual application screenshots below.</sub>
 
+<a href="https://shun-ren.github.io/drone_sim/">Try DroneLab on GitHub Pages</a>
+
 **[Quick start](#quick-start) · [Take the tour](#take-the-tour) · [Five missions](#five-missions) · [Test results](VALIDATION.md)**
 
 </div>
@@ -40,6 +42,14 @@ Choose an aircraft, fly a mission, and discover what changed. DroneLab connects 
 
 > **Two places to fly.** Game has five scored missions in the colourful training grounds. Simulator opens a real geographic city, with first-person drone controls, live GPS and 3D building outlines. Your training flight pauses safely while you explore. The **Flight instruments** button keeps the engineering HUD available in Game.
 
+## City flight previews
+
+The Simulator streams OpenFreeMap and OpenStreetMap city data into the drone view. These two flights show the current city experience: Marina Bay between Marina Bay Sands and the Singapore Flyer, plus San Francisco's Embarcadero.
+
+| Singapore · Marina Bay | San Francisco · Embarcadero |
+| :-: | :-: |
+| <img src="docs/images/city-demos/singapore-marina-bay.gif" alt="Drone flight around Singapore Marina Bay" width="460"> | <img src="docs/images/city-demos/san-francisco-embarcadero.gif" alt="Drone flight around San Francisco Embarcadero" width="460"> |
+
 ## Five missions
 
 |     | Mission             | Your objective                                                  | What it teaches                |
@@ -51,6 +61,18 @@ Choose an aircraft, fly a mission, and discover what changed. DroneLab connects 
 |  ≋  | **Wind challenge**  | Hold through seeded wind and three gusts, recover and land      | Disturbance rejection          |
 
 Every mission includes a **Watch demonstration** option. The repeatable pilot sends commands through the same physics and controller as the rest of the simulation; its runs are clearly marked as demonstrations.
+
+### Mission demonstrations
+
+These recordings run the same repeatable demonstration pilot used by the browser tests. They are shortened for the README; launch DroneLab to fly or watch the complete mission.
+
+| Hover test | Obstacle course | Delivery |
+| :-: | :-: | :-: |
+| <img src="docs/images/mission-demos/hover.gif" alt="Hover test demonstration" width="300"> | <img src="docs/images/mission-demos/obstacle.gif" alt="Obstacle course demonstration" width="300"> | <img src="docs/images/mission-demos/delivery.gif" alt="Delivery demonstration" width="300"> |
+
+| Inspection | Wind challenge |
+| :-: | :-: |
+| <img src="docs/images/mission-demos/inspection.gif" alt="Inspection demonstration" width="420"> | <img src="docs/images/mission-demos/wind.gif" alt="Wind challenge demonstration" width="420"> |
 
 ## The experiment loop
 
@@ -89,6 +111,8 @@ npm.cmd run dev
 ```
 
 Open **http://localhost:3000** (or the URL printed in the terminal). No API key or external account is needed for local simulation, storage or analysis. Use `npm.cmd` on Windows to avoid PowerShell wrapper restrictions.
+
+The repository also includes a GitHub Pages workflow. After it is enabled in the repository's **Settings → Pages** area with **GitHub Actions** as the source, pushes to `main` publish the browser build at the [DroneLab GitHub Pages site](https://shun-ren.github.io/drone_sim/).
 
 **Your first flight:** choose **Hover test → Watch demonstration → 4× → Open flight debrief**. For manual flight, use **Arm & fly**, climb to 10 m, hold steady, then descend gently onto pad A. **Hide missions** is in the upper-right view controls.
 

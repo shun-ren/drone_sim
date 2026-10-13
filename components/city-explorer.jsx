@@ -93,7 +93,8 @@ export default function CityExplorer({ config, session, onGame, switchKey }) {
       try {
         const { Map, Marker, setWorkerUrl } = await import('maplibre-gl');
         if (!live) return;
-        setWorkerUrl('/map-worker-6.11.2/maplibre-gl-worker.mjs');
+        const pageBase = typeof window !== 'undefined' && window.location.pathname.startsWith('/drone_sim/') ? '/drone_sim' : '';
+        setWorkerUrl(`${pageBase}/map-worker-6.11.2/maplibre-gl-worker.mjs`);
         map = new Map({ container: host.current, style: 'https://tiles.openfreemap.org/styles/liberty',
           center: [location.lng, location.lat], zoom: 16, pitch: 65, bearing: location.heading,
           interactive: false, centerClampedToGround: false, maxPitch: 89, canvasContextAttributes: { antialias: true }, attributionControl: { compact: false } });

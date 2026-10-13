@@ -8,11 +8,14 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
+    "build:pages": "node scripts/build-pages.mjs",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "format": "oxfmt",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",
+    "record:mission-gifs": "node scripts/record-mission-gifs.mjs",
+    "record:city-gifs": "node scripts/record-city-gifs.mjs",
     "examples": "node scripts/examples.mjs"
   },
   "dependencies": {

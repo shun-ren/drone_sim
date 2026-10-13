@@ -20,6 +20,11 @@ const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
+const isStaticPagesBuild = process.env.DRONELAB_STATIC_EXPORT === 'true';
+const staticPagesConfig = {
+  output: 'export' as const,
+  assetPrefix: '/drone_sim/',
+};
 
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
@@ -59,7 +64,9 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true, ignored: ['**/outputs/**', '**/tests/**', '**/examples/**'] } }
       : { watch: { ignored: ['**/outputs/**', '**/tests/**', '**/examples/**'] } },
     plugins: [
-      vinext(),
+      ...(isStaticPagesBuild
+        ? [vinext({ nextConfig: staticPagesConfig, prerender: true })]
+        : [vinext()]),
       sites(),
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },

@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-static';
 // The fixed-step engine lives outside React. The UI samples its mutable state at 10 Hz;
 // this component deliberately does not opt in to React Compiler memoization.
 /* oxlint-disable react/react-compiler */
